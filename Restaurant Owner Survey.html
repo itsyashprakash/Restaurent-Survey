@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Restaurant Owner Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #0f3d2e;
+    --green-primary: #1a7a4c;
+    --green-mid: #2fa66a;
+    --green-light: #e8f6ee;
+    --green-accent: #baf0d4;
+    --text-dark: #10241c;
+    --text-muted: #5b6b63;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 30px rgba(15, 61, 46, 0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(160deg, #f4fbf7 0%, #e9f7ef 40%, #f7fdfa 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: calc(40px + env(safe-area-inset-top, 0px)) 16px calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  h1, h2, h3, .logo { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  .hero { text-align: center; margin-bottom: 36px; }
+  .badge {
+    display: inline-block; background: var(--green-accent); color: var(--green-dark);
+    font-weight: 600; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .hero h1 { font-size: 32px; font-weight: 800; color: var(--green-dark); margin: 0 0 12px; line-height: 1.25; }
+  .hero p { color: var(--text-muted); font-size: 15.5px; line-height: 1.6; max-width: 520px; margin: 0 auto; }
+  .progress-track { height: 6px; background: #d9eee2; border-radius: 999px; margin: 28px 0 8px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 6%; background: linear-gradient(90deg, var(--green-mid), var(--green-primary)); border-radius: 999px; transition: width .35s ease; }
+  .progress-label { font-size: 12.5px; color: var(--text-muted); text-align: right; margin-bottom: 24px; }
+  .card { background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 32px 28px; margin-bottom: 20px; border: 1px solid #eaf5ee; }
+  .section-tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green-primary); background: var(--green-light); padding: 4px 10px; border-radius: 8px; margin-bottom: 14px; }
+  .q { margin-bottom: 26px; }
+  .q:last-child { margin-bottom: 0; }
+  .q label.qtext { display: block; font-weight: 600; font-size: 16px; margin-bottom: 4px; color: var(--text-dark); }
+  .q .hint { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+  input[type="text"], input[type="email"], textarea, select {
+    width: 100%; padding: 13px 14px; border: 1.5px solid #dcebe2; border-radius: 12px;
+    font-family: 'Inter', sans-serif; font-size: 14.5px; color: var(--text-dark); background: #fbfefc;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--green-mid); box-shadow: 0 0 0 4px rgba(47, 166, 106, 0.12); }
+  textarea { resize: vertical; min-height: 80px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option { display: flex; align-items: center; gap: 12px; border: 1.5px solid #dcebe2; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all .15s ease; font-size: 14.5px; }
+  .option:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .option input { accent-color: var(--green-primary); width: 17px; height: 17px; }
+  .scale-row { display: flex; justify-content: space-between; gap: 8px; }
+  .scale-opt { flex: 1; text-align: center; border: 1.5px solid #dcebe2; border-radius: 12px; padding: 12px 4px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all .15s ease; }
+  .scale-opt:hover { border-color: var(--green-mid); background: var(--green-light); }
+  .scale-opt input { display: none; }
+  .scale-opt.selected, .option.selected { border-color: var(--green-primary); background: var(--green-light); box-shadow: 0 0 0 3px rgba(26, 122, 76, 0.1); }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; max-width: 680px; margin: 8px auto 0; }
+  button { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 15px; padding: 14px 28px; border-radius: 14px; border: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease; }
+  .btn-primary { background: linear-gradient(135deg, var(--green-mid), var(--green-primary)); color: #fff; box-shadow: 0 8px 20px rgba(26, 122, 76, 0.25); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(26, 122, 76, 0.32); }
+  .btn-secondary { background: transparent; color: var(--green-primary); border: 1.5px solid #cdeada; }
+  .btn-secondary:hover { background: var(--green-light); }
+  .btn-secondary:disabled { opacity: 0.35; cursor: not-allowed; }
+  .step { display: none; animation: fadeIn .35s ease; }
+  .step.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .success { text-align: center; padding: 60px 28px; }
+  .success .icon { width: 70px; height: 70px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+  .success h2 { color: var(--green-dark); font-size: 24px; margin-bottom: 10px; }
+  .success p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+  .footer-note { text-align: center; font-size: 12.5px; color: #8aa196; margin-top: 30px; }
+</style>
+</head>
+<body>
+<canvas id="confettiCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; display:none;"></canvas>
+<div class="wrap">
+  <div class="hero">
+    <span class="badge">2-minute survey</span>
+    <h1>Help shape the next restaurant management platform</h1>
+    <p>You run the kitchen — we want to build software that actually keeps up with you. Quick, honest answers only.</p>
+  </div>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">Question 1 of 17</div>
+
+  <form id="surveyForm">
+    <div class="card">
+
+      <div class="step active" data-step="1">
+        <span class="section-tag">About your restaurant</span>
+        <div class="q">
+          <label class="qtext">What type of food business do you run?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q1" value="Single restaurant"> Single restaurant</label>
+            <label class="option"><input type="radio" name="q1" value="Small chain (2-5 locations)"> Small chain (2-5 locations)</label>
+            <label class="option"><input type="radio" name="q1" value="Larger chain (6+ locations)"> Larger chain (6+ locations)</label>
+            <label class="option"><input type="radio" name="q1" value="Cloud kitchen / delivery-only"> Cloud kitchen / delivery-only</label>
+            <label class="option"><input type="radio" name="q1" value="Cafe or QSR"> Cafe or QSR</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <span class="section-tag">About your restaurant</span>
+        <div class="q">
+          <label class="qtext">Which country / region are you based in?</label>
+          <input type="text" name="q2" placeholder="e.g. India, USA, UK...">
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <span class="section-tag">Current solution</span>
+        <div class="q">
+          <label class="qtext">What POS / management software do you currently use?</label>
+          <input type="text" name="q3" placeholder="e.g. Petpooja, Toast, Clover, Square, Zoho, paper & pen...">
+        </div>
+      </div>
+
+      <div class="step" data-step="4">
+        <span class="section-tag">Current solution</span>
+        <div class="q">
+          <label class="qtext">How long have you used your current system?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q4" value="Less than 6 months"> Less than 6 months</label>
+            <label class="option"><input type="radio" name="q4" value="6 months to 2 years"> 6 months to 2 years</label>
+            <label class="option"><input type="radio" name="q4" value="2-5 years"> 2–5 years</label>
+            <label class="option"><input type="radio" name="q4" value="5+ years"> 5+ years</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="5">
+        <span class="section-tag">Current solution</span>
+        <div class="q">
+          <label class="qtext">Roughly what do you pay per month, all-in?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q5" value="Free / ₹0"> Free / ₹0</label>
+            <label class="option"><input type="radio" name="q5" value="Under ₹2,000"> Under ₹2,000</label>
+            <label class="option"><input type="radio" name="q5" value="₹2,000-6,000"> ₹2,000–6,000</label>
+            <label class="option"><input type="radio" name="q5" value="₹6,000-15,000"> ₹6,000–15,000</label>
+            <label class="option"><input type="radio" name="q5" value="₹15,000+"> ₹15,000+</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="6">
+        <span class="section-tag">Pain points</span>
+        <div class="q">
+          <label class="qtext">How satisfied are you with your current software overall?</label>
+          <div class="scale-row">
+            <label class="scale-opt"><input type="radio" name="q6" value="1"> 1</label>
+            <label class="scale-opt"><input type="radio" name="q6" value="2"> 2</label>
+            <label class="scale-opt"><input type="radio" name="q6" value="3"> 3</label>
+            <label class="scale-opt"><input type="radio" name="q6" value="4"> 4</label>
+            <label class="scale-opt"><input type="radio" name="q6" value="5"> 5</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="7">
+        <span class="section-tag">Pain points</span>
+        <div class="q">
+          <label class="qtext">What frustrates you most about it?</label>
+          <div class="hint">Pick your top one</div>
+          <div class="options">
+            <label class="option"><input type="radio" name="q7" value="Slow or unhelpful support"> Slow or unhelpful support</label>
+            <label class="option"><input type="radio" name="q7" value="Hidden fees / unclear pricing"> Hidden fees / unclear pricing</label>
+            <label class="option"><input type="radio" name="q7" value="Downtime or crashes during service"> Downtime or crashes during service</label>
+            <label class="option"><input type="radio" name="q7" value="Delivery app integration issues"> Delivery app integration issues</label>
+            <label class="option"><input type="radio" name="q7" value="Hard to change menu/settings myself"> Hard to change menu/settings myself</label>
+            <label class="option"><input type="radio" name="q7" value="Contract or hardware lock-in"> Contract or hardware lock-in</label>
+            <label class="option"><input type="radio" name="q7" value="Weak inventory tracking"> Weak inventory tracking</label>
+            <label class="option"><input type="radio" name="q7" value="Other"> Other</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="8">
+        <span class="section-tag">Pain points</span>
+        <div class="q">
+          <label class="qtext">Tell us more about that frustration</label>
+          <div class="hint">A real example helps a lot</div>
+          <textarea name="q8" placeholder="What happened, and how often does it happen?"></textarea>
+        </div>
+      </div>
+
+      <div class="step" data-step="9">
+        <span class="section-tag">Pain points</span>
+        <div class="q">
+          <label class="qtext">Have you ever switched POS providers because of a problem?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q9" value="Yes"> Yes</label>
+            <label class="option"><input type="radio" name="q9" value="No"> No</label>
+            <label class="option"><input type="radio" name="q9" value="Thinking about it"> Thinking about it</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="10">
+        <span class="section-tag">Pain points</span>
+        <div class="q">
+          <label class="qtext">How reliable is your internet/offline mode during service?</label>
+          <div class="scale-row">
+            <label class="scale-opt"><input type="radio" name="q10" value="1"> 1</label>
+            <label class="scale-opt"><input type="radio" name="q10" value="2"> 2</label>
+            <label class="scale-opt"><input type="radio" name="q10" value="3"> 3</label>
+            <label class="scale-opt"><input type="radio" name="q10" value="4"> 4</label>
+            <label class="scale-opt"><input type="radio" name="q10" value="5"> 5</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="11">
+        <span class="section-tag">Willingness to pay</span>
+        <div class="q">
+          <label class="qtext">If a new platform fixed your biggest frustration, what would you expect to pay monthly?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q11" value="I'd want it free"> I'd want it free</label>
+            <label class="option"><input type="radio" name="q11" value="Under ₹2,000"> Under ₹2,000</label>
+            <label class="option"><input type="radio" name="q11" value="₹2,000-6,000"> ₹2,000–6,000</label>
+            <label class="option"><input type="radio" name="q11" value="₹6,000-15,000"> ₹6,000–15,000</label>
+            <label class="option"><input type="radio" name="q11" value="₹15,000+"> ₹15,000+</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="12">
+        <span class="section-tag">Willingness to pay</span>
+        <div class="q">
+          <label class="qtext">Would you prefer a free tier with paid upgrades, or a flat simple monthly price?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q12" value="Free tier + paid upgrades"> Free tier + paid upgrades</label>
+            <label class="option"><input type="radio" name="q12" value="Flat simple monthly price"> Flat simple monthly price</label>
+            <label class="option"><input type="radio" name="q12" value="Pay per feature I use"> Pay per feature I use</label>
+            <label class="option"><input type="radio" name="q12" value="No preference"> No preference</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="13">
+        <span class="section-tag">Willingness to pay</span>
+        <div class="q">
+          <label class="qtext">How important is it that support responds within minutes, not hours?</label>
+          <div class="scale-row">
+            <label class="scale-opt"><input type="radio" name="q13" value="1"> 1</label>
+            <label class="scale-opt"><input type="radio" name="q13" value="2"> 2</label>
+            <label class="scale-opt"><input type="radio" name="q13" value="3"> 3</label>
+            <label class="scale-opt"><input type="radio" name="q13" value="4"> 4</label>
+            <label class="scale-opt"><input type="radio" name="q13" value="5"> 5</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="14">
+        <span class="section-tag">Willingness to pay</span>
+        <div class="q">
+          <label class="qtext">Which features would make you seriously consider switching?</label>
+          <div class="hint">Open answer — list anything that comes to mind</div>
+          <textarea name="q14" placeholder="e.g. better inventory, transparent pricing, faster support..."></textarea>
+        </div>
+      </div>
+
+      <div class="step" data-step="15">
+        <span class="section-tag">Willingness to pay</span>
+        <div class="q">
+          <label class="qtext">Would you be open to a 15-minute call to share more detail?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="q15" value="Yes"> Yes</label>
+            <label class="option"><input type="radio" name="q15" value="Maybe later"> Maybe later</label>
+            <label class="option"><input type="radio" name="q15" value="No"> No</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="16">
+        <span class="section-tag">Stay in touch (optional)</span>
+        <div class="q">
+          <label class="qtext">Email or phone number</label>
+          <div class="hint">Whichever you're comfortable sharing — totally optional</div>
+          <input type="text" name="q16" placeholder="you@example.com or +91 98765 43210">
+        </div>
+      </div>
+
+      <div class="step" data-step="17">
+        <span class="section-tag">Last one</span>
+        <div class="q">
+          <label class="qtext">Anything else you'd want a restaurant software company to know?</label>
+          <textarea name="q17" placeholder="Anything at all..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <div class="nav-row" id="navRow">
+    <button type="button" class="btn-secondary" id="backBtn">Back</button>
+    <button type="button" class="btn-primary" id="nextBtn">Next</button>
+  </div>
+
+  <div class="card success" id="successCard" style="display:none;">
+    <div class="icon">✅</div>
+    <h2>Thank you!</h2>
+    <p>Your answers were just submitted. This genuinely helps shape what gets built next — appreciate you taking the time.</p>
+  </div>
+
+  <div class="footer-note">Your responses are sent securely and only used to guide product decisions.</div>
+</div>
+
+<script>
+  const totalSteps = 17;
+  let currentStep = 1;
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
+  const form = document.getElementById('surveyForm');
+  const navRow = document.getElementById('navRow');
+  const successCard = document.getElementById('successCard');
+
+  form.addEventListener('click', (e) => {
+    const optLabel = e.target.closest('.option, .scale-opt');
+    if (optLabel) {
+      const name = optLabel.querySelector('input').name;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+        inp.closest('.option, .scale-opt').classList.remove('selected');
+      });
+      optLabel.classList.add('selected');
+    }
+  });
+
+  function updateProgress() {
+    const pct = (currentStep / totalSteps) * 100;
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = `Question ${currentStep} of ${totalSteps}`;
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+    backBtn.disabled = n === 1;
+    nextBtn.textContent = n === totalSteps ? 'Submit' : 'Next';
+    updateProgress();
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      showStep(currentStep);
+    } else {
+      submitForm();
+    }
+  });
+
+  backBtn.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+
+  // ============ GOOGLE SHEET SUBMISSION ============
+  // 1. Create a Google Sheet.
+  // 2. Extensions > Apps Script, paste the doPost script that appends
+  //    e.parameter values as a new row, then Deploy > Web app (access: Anyone).
+  // 3. Paste that deployed Web App URL below.
+  const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  function submitForm() {
+    const formData = new FormData(form);
+    const payload = new URLSearchParams();
+    for (const [key, value] of formData.entries()) {
+      payload.append(key, value);
+    }
+    payload.append('timestamp', new Date().toISOString());
+
+    fetch(SCRIPT_URL, { method: 'POST', body: payload, mode: 'no-cors' }).catch(() => {});
+
+    navRow.style.display = 'none';
+    form.style.display = 'none';
+    document.querySelector('.card').style.display = 'none';
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('progressFill').parentElement.style.display = 'none';
+    progressLabel.style.display = 'none';
+    successCard.style.display = 'block';
+    launchConfetti();
+  }
+
+  // ============ CONFETTI ============
+  function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    canvas.style.display = 'block';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const colors = ['#1a7a4c', '#2fa66a', '#baf0d4', '#0f3d2e', '#ffd166', '#ffffff'];
+    const pieces = [];
+    const count = 160;
+
+    for (let i = 0; i < count; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.5,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 10,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        speedY: 2 + Math.random() * 3,
+        speedX: (Math.random() - 0.5) * 2,
+        tiltAmp: Math.random() * 20,
+        tiltPhase: Math.random() * Math.PI * 2
+      });
+    }
+
+    let frame = 0;
+    const duration = 220; // frames
+
+    function draw() {
+      frame++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.tiltPhase + frame * 0.05) * 0.5;
+        p.rot += p.rotSpeed;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+
+      if (frame < duration) {
+        requestAnimationFrame(draw);
+      } else {
+        canvas.style.display = 'none';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    draw();
+  }
+
+  showStep(currentStep);
+</script>
+</body>
+</html>
